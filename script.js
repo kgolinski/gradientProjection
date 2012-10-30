@@ -54,8 +54,8 @@ function setup(){
 var Config = function(){
 	this.animTime=5000;
 	this.steps = 100;
-	this.vSubdivisions = 5;
-	this.hSubdivisions = 3;
+	this.vSubdivisions = 3;
+	this.hSubdivisions = 7;
 	this.newColor = changeColors;
 	this.distTolerance = 8;
 	this.gradientStartIndex = 0;
@@ -92,7 +92,8 @@ function draw(){
 /* ------------------------------------------------------------------------------------------- */
 
 function drawHandles(){
-  ctx.strokeStyle = "rgb(255,255,255)";
+  ctx.strokeStyle = "rgba(255,255,255,0.9)";
+  ctx.fillStyle = "rgba(255,255,255,0.9)";
   ctx.beginPath();
   ctx.moveTo(points[0].x,points[0].y);
 	for(var i=1;i<points.length;i++){
@@ -103,7 +104,10 @@ function drawHandles(){
   
   for(var i=0;i<points.length;i++){
     circle(points[i].x,points[i].y,config.distTolerance);
-    circle(points[i].x,points[i].y,config.distTolerance/2);
+    if(i==config.gradientStartIndex || i==config.gradientStopIndex)
+      filledCircle(points[i].x,points[i].y,config.distTolerance/2);
+    else
+      circle(points[i].x,points[i].y,config.distTolerance/2);
   }
 }
 
@@ -124,6 +128,15 @@ function circle(x,y,radius){
   ctx.arc(x, y, radius, 0, Math.PI*2, true); 
   ctx.closePath();
   ctx.stroke();
+}
+
+/* ------------------------------------------------------------------------------------------- */
+
+function filledCircle(x,y,radius){
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, Math.PI*2, true); 
+  ctx.closePath();
+  ctx.fill();
 }
 
 /* ------------------------------------------------------------------------------------------- */

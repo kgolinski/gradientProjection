@@ -37,7 +37,6 @@ function setup(){
 	gui.add(config, 'animTime',0,10000).step(500);
   gui.add(config, 'steps', 0, 200);
   gui.add(config, 'distTolerance',5,50).step(1);
-  gui.add(config, 'subdivisions', 1, 20).step(1);
   gui.add(config, 'toggleDistortion');
   gui.add(config, 'newColor');
   
@@ -55,9 +54,12 @@ function setup(){
 var Config = function(){
 	this.animTime=5000;
 	this.steps = 100;
-	this.subdivisions = 4;
+	this.vSubdivisions = 5;
+	this.hSubdivisions = 3;
 	this.newColor = changeColors;
 	this.distTolerance = 8;
+	this.gradientStartIndex = 0;
+	this.gradientStopIndex = (this.vSubdivisions+this.hSubdivisions+2);
 	this.toggleDistortion = function(){ mode=(++mode)%modes; };
 };
 
@@ -66,7 +68,7 @@ var Config = function(){
 function draw(){
   clear();
 	
-	var gradient = ctx.createLinearGradient(points[0].x, points[0].y, points[2].x, points[2].y);
+	var gradient = ctx.createLinearGradient(points[config.gradientStartIndex].x, points[config.gradientStartIndex].y, points[config.gradientStopIndex].x, points[config.gradientStopIndex].y);
 
 	gradient.addColorStop(0, color1.blend(prevColor1,(1-step/config.steps)).toString());
 	gradient.addColorStop(1, color2.blend(prevColor2,(1-step/config.steps)).toString());
@@ -99,19 +101,10 @@ function drawHandles(){
   ctx.closePath();
   ctx.stroke();
   
-  //line(points[0],points[2]);
-  
   for(var i=0;i<points.length;i++){
     circle(points[i].x,points[i].y,config.distTolerance);
     circle(points[i].x,points[i].y,config.distTolerance/2);
   }
-  
-  //subdivisions
-  for(var i=0;i<config.subdivisions+1;i++){
-    line(lerpVertex(points[0],points[1],i/(config.subdivisions+1)),lerpVertex(points[3],points[2],i/(config.subdivisions+1)))
-    line(lerpVertex(points[0],points[3],i/(config.subdivisions+1)),lerpVertex(points[1],points[2],i/(config.subdivisions+1)))
-  }
-  
 }
 
 /* ------------------------------------------------------------------------------------------- */
@@ -194,7 +187,6 @@ function down(e){
         }
       }
     }
-    console.log("canvas.click (" +mouse.x+","+mouse.y+")");
 }
 
 /* ------------------------------------------------------------------------------------------- */
@@ -248,6 +240,31 @@ function initPoints(){
             new Vertex(width-width/4,height-height/4),
             new Vertex(width/4,height-height/4)
             ];
+  /*var top = [],
+  var left = [],
+  var bottom = [],
+  var right = [];
+  */
+  var start = points[2],
+      stop = points[3];
+  for(var i=1;i<config.hSubdivisions+1;i++){
+    points.splice(3,0,lerpVertex(start,stop,1-i/(config.hSubdivisions+1)))
+  }
+  start = points[1];
+  stop = points[2];
+  for(var i=1;i<config.vSubdivisions+1;i++){
+    points.splice(2,0,lerpVertex(start,stop,1-i/(config.vSubdivisions+1)))
+  }
+  start = points[0];
+  stop = points[1];
+  for(var i=1;i<config.hSubdivisions+1;i++){
+    points.splice(1,0,lerpVertex(start,stop,1-i/(config.hSubdivisions+1)))
+  }
+  start = points[0];
+  stop = points[points.length-1];
+  for(var i=1;i<config.vSubdivisions+1;i++){
+    points.splice(points.length,0,lerpVertex(start,stop,1-i/(config.vSubdivisions+1)))
+  }
 }
 
 /* ------------------------------------------------------------------------------------------- */

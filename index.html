@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8">
+<title>kolory</title>
+<style type="text/css">
+* { margin:0; padding:0; }
+html, body { width:100%; height:100%; }
+canvas { display:block; }
+body { background:#000; color:#fff; font-family: Tahoma; font-size:1px; color:rgba(255,255,255,0); }
+table { z-index:10; position:fixed; top:0; left:0; width:10px; padding:0; margin:0; border:0; }
+tr, td { margin:0; padding:0; border:0;}
+td { text-align:center;}
+.active {border:1px solid #000; }
+</style>
+<script type="text/javascript" src="jquery-1.8.2.js"></script>
+<script type="text/javascript" src="color.js"></script>
+<script type="text/javascript" src="dat.gui.js"></script>
+<script type="text/javascript" src="script.js"></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<table id="kolory" cellspacing="0" cellpadding="0">
+<tr><td bgcolor="#7FFFD4">akwamaryna</td></tr>
+<tr><td bgcolor="#FAFFFA">alabastrowy</td></tr>
+<tr><td bgcolor="#E61C66">amarantowy</td></tr>
+<tr><td bgcolor="#9966CC">ametystowy</td></tr>
+<tr><td bgcolor="#364135">antracytowy</td></tr>
+<tr><td bgcolor="#003153">atramentowy</td></tr>
+<tr><td bgcolor="#F9E04B">bahama yellow</td></tr>
+<tr><td bgcolor="#FEFE33">bananowy</td></tr>
+<tr><td bgcolor="#C2B280">beżowy</td></tr>
+<tr><td bgcolor="#FFFFFF">biały</td></tr>
+<tr><td bgcolor="#FF0080">biskupi</td></tr>
+<tr><td bgcolor="#4169E1">błękit królewski</td></tr>
+<tr><td bgcolor="#0027C2">błękit paryski</td></tr>
+<tr><td bgcolor="#003153">błękit pruski</td></tr>
+<tr><td bgcolor="#0300FD">błękit Thénarda</td></tr>
+<tr><td bgcolor="#082E79">błękit Turnbulla</td></tr>
+<tr><td bgcolor="#500000">"bordowy, bordo"</td></tr>
+<tr><td bgcolor="#964B00">brązowy</td></tr>
+<tr><td bgcolor="#70201F">brunatny</td></tr>
+<tr><td bgcolor="#FFCC99">brzoskwiniowy</td></tr>
+<tr><td bgcolor="#730029">buraczkowy</td></tr>
+<tr><td bgcolor="#600201">burgund</td></tr>
+<tr><td bgcolor="#FFBF00">bursztynowy</td></tr>
+<tr><td bgcolor="#6B5636">bury</td></tr>
+<tr><td bgcolor="#E96B39">ceglasty</td></tr>
+<tr><td bgcolor="#3300CC">chabrowy</td></tr>
+<tr><td bgcolor="#FFFFD2">chamois</td></tr>
+<tr><td bgcolor="#FFE5B4">cielisty</td></tr>
+<tr><td bgcolor="#00FFFF">cyjan</td></tr>
+<tr><td bgcolor="#A2007B">cyklamen</td></tr>
+<tr><td bgcolor="#9D5B03">cynamonowy</td></tr>
+<tr><td bgcolor="#E34234">"cynobrowy, cynober"</td></tr>
+<tr><td bgcolor="#FFFF00">cytrynowy</td></tr>
+<tr><td bgcolor="#000000">czarny</td></tr>
+<tr><td bgcolor="#8B4726">czekoladowy</td></tr>
+<tr><td bgcolor="#FC0300">czerwień wzrokowa</td></tr>
+<tr><td bgcolor="#801818">czerwień żelazowa</td></tr>
+<tr><td bgcolor="#FF0000">czerwony</td></tr>
+<tr><td bgcolor="#F5F5DC">écru</td></tr>
+<tr><td bgcolor="#C35C6F">eozyna</td></tr>
+<tr><td bgcolor="#4D5D53">feldgrau</td></tr>
+<tr><td bgcolor="#B803FF">fioletowy</td></tr>
+<tr><td bgcolor="#EE82EE">fiołkowy</td></tr>
+<tr><td bgcolor="#FF00FF">fuksja</td></tr>
+<tr><td bgcolor="#C6CECE">gołębi</td></tr>
+<tr><td bgcolor="#36454F">grafitowy</td></tr>
+<tr><td bgcolor="#000080">granatowy</td></tr>
+<tr><td bgcolor="#CADC79">groszkowy</td></tr>
+<tr><td bgcolor="#00A693">grynszpan</td></tr>
+<tr><td bgcolor="#3D2B1F">"heban, hebanowy"</td></tr>
+<tr><td bgcolor="#CC5D2B">herbaciany</td></tr>
+<tr><td bgcolor="#4B0082">indygo</td></tr>
+<tr><td bgcolor="#4F86F7">jagodowy</td></tr>
+<tr><td bgcolor="#CDEBA7">jaśminowy</td></tr>
+<tr><td bgcolor="#906030">kakaowy</td></tr>
+<tr><td bgcolor="#FFFF33">kanarkowy</td></tr>
+<tr><td bgcolor="#FF2400">kardynalski</td></tr>
+<tr><td bgcolor="#DC143C">karmazynowy</td></tr>
+<tr><td bgcolor="#841839">karminowy</td></tr>
+<tr><td bgcolor="#4D1F1C">kasztanowy</td></tr>
+<tr><td bgcolor="#2C1B01">kawowy</td></tr>
+<tr><td bgcolor="#C3B091">khaki</td></tr>
+<tr><td bgcolor="#19247C">kobaltowy</td></tr>
+<tr><td bgcolor="#C73C07">koniakowy</td></tr>
+<tr><td bgcolor="#FF7F50">koralowy</td></tr>
+<tr><td bgcolor="#FFFFF0">kość słoniowa</td></tr>
+<tr><td bgcolor="#FFFDD0">kremowy</td></tr>
+<tr><td bgcolor="#CF2929">krwisty</td></tr>
+<tr><td bgcolor="#C9A2BF">lawendowy</td></tr>
+<tr><td bgcolor="#3366CC">lapis-lazuli</td></tr>
+<tr><td bgcolor="#007FFF">lazurowy</td></tr>
+<tr><td bgcolor="#C8A2C8">lila</td></tr>
+<tr><td bgcolor="#DEB4CB">lila róż</td></tr>
+<tr><td bgcolor="#DD9ECD">liliowy</td></tr>
+<tr><td bgcolor="#93F600">limonkowy</td></tr>
+<tr><td bgcolor="#FA8072">łososiowy</td></tr>
+<tr><td bgcolor="#FF00FF">magenta (HTML)</td></tr>
+<tr><td bgcolor="#FF0090">magenta (druk)</td></tr>
+<tr><td bgcolor="#C04000">"mahoń, mahoniowy"</td></tr>
+<tr><td bgcolor="#E4BECF">majtkowy</td></tr>
+<tr><td bgcolor="#E21E13">makowy</td></tr>
+<tr><td bgcolor="#006633">malachitowy</td></tr>
+<tr><td bgcolor="#EB0165">malinowy</td></tr>
+<tr><td bgcolor="#FFC000">marchewkowy</td></tr>
+<tr><td bgcolor="#5B5D74">marengo</td></tr>
+<tr><td bgcolor="#B87333">miedziany</td></tr>
+<tr><td bgcolor="#BCE27F">miętowy</td></tr>
+<tr><td bgcolor="#B22222">minia</td></tr>
+<tr><td bgcolor="#E3AF34">miodowy</td></tr>
+<tr><td bgcolor="#FFFFF0">mleczny</td></tr>
+<tr><td bgcolor="#4169E1">modry</td></tr>
+<tr><td bgcolor="#E9967B">morelowy</td></tr>
+<tr><td bgcolor="#008080">morski</td></tr>
+<tr><td bgcolor="#D4C279">mosiądz/-owy</td></tr>
+<tr><td bgcolor="#E3E7E6">mysi</td></tr>
+<tr><td bgcolor="#0000FF">niebieski</td></tr>
+<tr><td bgcolor="#9F9FDF">niebieskofioletowy</td></tr>
+<tr><td bgcolor="#532338">oberżynowy</td></tr>
+<tr><td bgcolor="#CC7722">ochra</td></tr>
+<tr><td bgcolor="#808000">oliwkowy</td></tr>
+<tr><td bgcolor="#FFA500">oranż</td></tr>
+<tr><td bgcolor="#BD9460">orzechowy</td></tr>
+<tr><td bgcolor="#532F28">palisander</td></tr>
+<tr><td bgcolor="#6EBE9F">patynowy</td></tr>
+<tr><td bgcolor="#EDB5AE">pąsowy</td></tr>
+<tr><td bgcolor="#FAFAE7">perłowy</td></tr>
+<tr><td bgcolor="#F3ECDB">piaskowy</td></tr>
+<tr><td bgcolor="#9FFB88">pistacjowy</td></tr>
+<tr><td bgcolor="#FDE456">piwny</td></tr>
+<tr><td bgcolor="#E5E4E2">platynowy</td></tr>
+<tr><td bgcolor="#E1D9AC">płowy</td></tr>
+<tr><td bgcolor="#FE7F00">pomarańczowy</td></tr>
+<tr><td bgcolor="#DBE3DE">popielaty</td></tr>
+<tr><td bgcolor="#FAF7E5">porcelanowy</td></tr>
+<tr><td bgcolor="#CF2F2F">poziomkowy</td></tr>
+<tr><td bgcolor="#800080">purpurowy</td></tr>
+<tr><td bgcolor="#800000">rdzawy</td></tr>
+<tr><td bgcolor="#C34444">róż indyjski</td></tr>
+<tr><td bgcolor="#B80000">róż pompejański</td></tr>
+<tr><td bgcolor="#F3B387">róż wenecki</td></tr>
+<tr><td bgcolor="#FFC0CB">różowy</td></tr>
+<tr><td bgcolor="#D41B56">rubinowy</td></tr>
+<tr><td bgcolor="#CD5700">rudy</td></tr>
+<tr><td bgcolor="#3A3431">sadza angielska</td></tr>
+<tr><td bgcolor="#ACE1AF">seledynowy</td></tr>
+<tr><td bgcolor="#AC7A33">sepia</td></tr>
+<tr><td bgcolor="#EDFA8E">siarkowy</td></tr>
+<tr><td bgcolor="#8AA4B7">siny</td></tr>
+<tr><td bgcolor="#DED5D0">siwy</td></tr>
+<tr><td bgcolor="#E97451">siena palona</td></tr>
+<tr><td bgcolor="#FFFF99">słomkowy</td></tr>
+<tr><td bgcolor="#0C2419">smolisty</td></tr>
+<tr><td bgcolor="#CD7F32">spiżowy</td></tr>
+<tr><td bgcolor="#C0C0C0">srebrny</td></tr>
+<tr><td bgcolor="#7A7D80">stalowy</td></tr>
+<tr><td bgcolor="#CFB53B">stare złoto</td></tr>
+<tr><td bgcolor="#082567">szafirowy</td></tr>
+<tr><td bgcolor="#F4C430">szafranowy</td></tr>
+<tr><td bgcolor="#808080">szary</td></tr>
+<tr><td bgcolor="#AD1111">szkarłatny żołądź</td></tr>
+<tr><td bgcolor="#19A56F">szmaragdowy</td></tr>
+<tr><td bgcolor="#50344F">śliwkowy</td></tr>
+<tr><td bgcolor="#FFE1BE">świniowy</td></tr>
+<tr><td bgcolor="#866423">tabaczkowy</td></tr>
+<tr><td bgcolor="#870121">tango</td></tr>
+<tr><td bgcolor="#CF2942">truskawkowy</td></tr>
+<tr><td bgcolor="#30D5C8">turkusowy</td></tr>
+<tr><td bgcolor="#FF8000">tycjan</td></tr>
+<tr><td bgcolor="#002D6E">ultramaryna</td></tr>
+<tr><td bgcolor="#73542F">umbra</td></tr>
+<tr><td bgcolor="#660033">winny</td></tr>
+<tr><td bgcolor="#800000">wiśniowy</td></tr>
+<tr><td bgcolor="#E2E1A3">woskowy</td></tr>
+<tr><td bgcolor="#DBB0EF">wrzosowy</td></tr>
+<tr><td bgcolor="#326647">zieleń butelkowa</td></tr>
+<tr><td bgcolor="#00FF00">zieleń jaskrawa</td></tr>
+<tr><td bgcolor="#33CC66">zieleń Veronese’a</td></tr>
+<tr><td bgcolor="#C0D727">zieleń wiosenna</td></tr>
+<tr><td bgcolor="#6E6F2F">zieleń zgniła</td></tr>
+<tr><td bgcolor="#008000">zielony</td></tr>
+<tr><td bgcolor="#FFC125">złocisty</td></tr>
+<tr><td bgcolor="#FFD700">złoty</td></tr>
+<tr><td bgcolor="#FFFF00">żółty</td></tr>
+</table>
+</body>
+</html>

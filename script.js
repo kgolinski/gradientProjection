@@ -13,7 +13,7 @@ var canvas,
 	color2,
 	prevColor2,
 	frameRate = 20,
-	colors = [],
+	colors = {values:[],names:[]},
 	points = [],
 	colorToChange = 0,
 	step = 0,
@@ -144,11 +144,12 @@ function filledCircle(x,y,radius){
 function changeColors(){
 	if(colorToChange%2==0){
 		prevColor1 = color1;
-		color1 = colors[Math.floor(Math.random()*colors.length)];
+		color1 = Color(colors.values[Math.floor(Math.random()*colors.values.length)]);
 	}else{
 		prevColor2 = color2;
-		color2 = colors[Math.floor(Math.random()*colors.length)]
+		color2 = Color(colors.values[Math.floor(Math.random()*colors.values.length)]);
 	}
+	console.log(colorName(color1) + " -> " + colorName(color2));
 	colorToChange=(++colorToChange)%2;
 	step=0;
 	stepper();
@@ -189,6 +190,7 @@ function resize(){
 /* ------------------------------------------------------------------------------------------- */
 
 function down(e){
+    e.preventDefault();
     var mouse = getPos(e);
     if(mode==MODE_CONFIG)
     {
@@ -205,6 +207,7 @@ function down(e){
 /* ------------------------------------------------------------------------------------------- */
 
 function drag(e){
+  e.preventDefault();
   if(draggedPoint>-1){
     points[draggedPoint]=getPos(e);
   }
@@ -212,7 +215,8 @@ function drag(e){
 
 /* ------------------------------------------------------------------------------------------- */
 
-function up(){
+function up(e){
+  e.preventDefault();
   draggedPoint = -1;
   canvas.onmousemove = null;
 }
@@ -253,11 +257,6 @@ function initPoints(){
             new Vertex(width-width/4,height-height/4),
             new Vertex(width/4,height-height/4)
             ];
-  /*var top = [],
-  var left = [],
-  var bottom = [],
-  var right = [];
-  */
   var start = points[2],
       stop = points[3];
   for(var i=1;i<config.hSubdivisions+1;i++){
@@ -283,12 +282,22 @@ function initPoints(){
 /* ------------------------------------------------------------------------------------------- */
 
 function initColors(){
-	$("td").each(function(){colors.push(Color($(this).attr("bgcolor")))});
-	
-	color1 = colors[Math.floor(Math.random()*colors.length)];
+	$("td").each(function(){
+	  colors.values.push($(this).attr("bgcolor"));
+	  colors.names.push($(this).text());
+	});
+	color1 = Color(colors.values[Math.floor(Math.random()*colors.values.length)]);
 	prevColor1 = color1;
-	color2 = colors[Math.floor(Math.random()*colors.length)]
+	color2 = Color(colors.values[Math.floor(Math.random()*colors.values.length)]);
 	prevColor2 = color2;
+	
+	console.log(colorName(color1) + " -> " + colorName(color2));
+}
+
+/* ------------------------------------------------------------------------------------------- */
+
+function colorName(color){
+	return colors.names[colors.values.indexOf(color.toString())]
 }
 
 /* ------------------------------------------------------------------------------------------- */

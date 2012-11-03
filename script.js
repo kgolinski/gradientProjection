@@ -19,7 +19,9 @@ var canvas,
 	step = 0,
 	config,
 	mode,
-	draggedPoint = -1;
+	rpp=5,
+	draggedPoint = -1,
+	fade = false;
 window.onload = setup;
 
 /* ------------------------------------------------------------------------------------------- */
@@ -39,13 +41,14 @@ function setup(){
   gui.add(config, 'distTolerance',5,50).step(1);
   gui.add(config, 'toggleDistortion');
   gui.add(config, 'newColor');
-  
+  //gui.hide();
   resize();
 	initListeners();
 	initColors();
 	initPoints();
 	
 	setInterval(draw,1000.0/frameRate);
+	setInterval(askTwitter,5000);
 	draw();
 }
 
@@ -141,18 +144,23 @@ function filledCircle(x,y,radius){
 
 /* ------------------------------------------------------------------------------------------- */
 
-function changeColors(){
-	if(colorToChange%2==0){
+function changeColors(color){
+  if(color == undefined)
+    color = colors.values[Math.floor(Math.random()*colors.values.length)];
+  
+  if(colorToChange%2==0){
 		prevColor1 = color1;
-		color1 = Color(colors.values[Math.floor(Math.random()*colors.values.length)]);
+		color1 = Color(color);
 	}else{
 		prevColor2 = color2;
-		color2 = Color(colors.values[Math.floor(Math.random()*colors.values.length)]);
+		color2 = Color(color);
 	}
 	console.log(colorName(color1) + " -> " + colorName(color2));
 	colorToChange=(++colorToChange)%2;
 	step=0;
+	fade=true;
 	stepper();
+	
 }
 
 /* ------------------------------------------------------------------------------------------- */
@@ -165,6 +173,7 @@ function stepper(){
 	{
 		prevColor1=color1;
 		prevColor2=color2;
+		fade=false;
 	}
 }
 
@@ -247,6 +256,8 @@ function keypress(e){
     mode=(++mode)%modes;
   if (key=='c' || key=='C')
     changeColors();
+  if (key=='a' || key=='A')
+    askTwitter();
 }
 
 /* ------------------------------------------------------------------------------------------- */
@@ -296,8 +307,49 @@ function initColors(){
 
 /* ------------------------------------------------------------------------------------------- */
 
+function askTwitter(){
+  if(!fade)
+  {
+    $.getJSON('http://search.twitter.com/search.json?q=%23kolor&rpp='+rpp+'&page=1&callback=?',function(data){
+      //console.log(data);
+      var index = -1;
+      for(r in data.results){
+        index = parseTweet(data.results[r].text);
+        if(index!=-1){
+          //console.log(colors.names[index]+' in tweet')
+          if(color1!=colors.values[index] && color2!=colors.values[index]){
+            changeColors(colors.values[index]);
+          }
+          break;
+        }
+        //console.log(data.results[r].text);
+      }
+    });
+  }
+}
+
+/* ------------------------------------------------------------------------------------------- */
+
+function parseTweet(text){
+  var parts = text.split(" ");
+  for(var i=0;i<parts.length;i++){
+    if(colorIndex(parts[i])!=-1){
+      return colorIndex(parts[i]);
+    } 
+  }
+  return -1;
+}
+
+/* ------------------------------------------------------------------------------------------- */
+
 function colorName(color){
 	return colors.names[colors.values.indexOf(color.toString())]
+}
+
+/* ------------------------------------------------------------------------------------------- */
+
+function colorIndex(name){
+  return colors.names.indexOf(name);
 }
 
 /* ------------------------------------------------------------------------------------------- */

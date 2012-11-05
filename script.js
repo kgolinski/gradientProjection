@@ -1,4 +1,4 @@
-//controls : H, M, C 
+//controls : H, M, C, A
 var MODE_DRAW = 0,
     MODE_CONFIG = 1,
     modes=2;
@@ -37,16 +37,15 @@ function setup(){
 	var gui = new dat.GUI();
 	//gui.remember(config);  	
 	gui.add(config, 'animTime',0,10000).step(500);
-  gui.add(config, 'steps', 0, 200);
-  gui.add(config, 'distTolerance',5,50).step(1);
-  gui.add(config, 'toggleDistortion');
-  gui.add(config, 'newColor');
-  //gui.hide();
-  resize();
+	gui.add(config, 'steps', 0, 200);
+	gui.add(config, 'distTolerance',5,50).step(1);
+	gui.add(config, 'toggleDistortion');
+	gui.add(config, 'newColor');
+	
+	resize();
 	initListeners();
 	initColors();
 	initPoints();
-	
 	setInterval(draw,1000.0/frameRate);
 	setInterval(askTwitter,5000);
 	draw();
@@ -55,7 +54,7 @@ function setup(){
 /* ------------------------------------------------------------------------------------------- */
 
 var Config = function(){
-	this.animTime=5000;
+	this.animTime=2000;
 	this.steps = 100;
 	this.vSubdivisions = 3;
 	this.hSubdivisions = 7;
@@ -383,8 +382,8 @@ Vertex = function(x,y,z){
 
 function clear(){
 	ctx.fillStyle = "rgb(0, 0, 0)";
-	ctx.fillRect(0, 0, width, height);
-	//ctx.clearRect(0,0,width,height);
+	//ctx.fillRect(0, 0, width, height);
+	ctx.clearRect(0,0,width,height);
 }
 
 /* ------------------------------------------------------------------------------------------- */

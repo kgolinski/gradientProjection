@@ -32,7 +32,9 @@ function setup(){
 	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext('2d');
 	mode = MODE_DRAW;
-	
+	resize();
+	initListeners();
+	$("canvas").css("cursor", "none");
 	config = new Config();
 	var gui = new dat.GUI();
 	//gui.remember(config);  	
@@ -42,13 +44,12 @@ function setup(){
 	gui.add(config, 'toggleDistortion');
 	gui.add(config, 'newColor');
 	
-	resize();
-	initListeners();
 	initColors();
 	initPoints();
 	setInterval(draw,1000.0/frameRate);
 	setInterval(askTwitter,5000);
 	draw();
+	
 }
 
 /* ------------------------------------------------------------------------------------------- */
@@ -56,13 +57,15 @@ function setup(){
 var Config = function(){
 	this.animTime=2000;
 	this.steps = 100;
-	this.vSubdivisions = 3;
+	this.vSubdivisions = 7;
 	this.hSubdivisions = 7;
 	this.newColor = changeColors;
 	this.distTolerance = 8;
 	this.gradientStartIndex = 0;
 	this.gradientStopIndex = (this.vSubdivisions+this.hSubdivisions+2);
-	this.toggleDistortion = function(){ mode=(++mode)%modes; };
+	this.initialWidth = height/2;
+	this.initialHeight = height/2;
+	this.toggleDistortion = toggleDistortion;
 };
 
 /* ------------------------------------------------------------------------------------------- */
@@ -252,7 +255,7 @@ function keypress(e){
   var unicode=evtobj.charCode? evtobj.charCode : evtobj.keyCode
   var key=String.fromCharCode(unicode)
   if (key=='m' || key=='M')
-    mode=(++mode)%modes;
+    toggleDistortion();
   if (key=='c' || key=='C')
     changeColors();
   if (key=='a' || key=='A')
@@ -262,10 +265,11 @@ function keypress(e){
 /* ------------------------------------------------------------------------------------------- */
 
 function initPoints(){
-  points = [new Vertex(width/4,height/4),
-            new Vertex(width-width/4,height/4),
-            new Vertex(width-width/4,height-height/4),
-            new Vertex(width/4,height-height/4)
+  
+  points = [new Vertex(width/2-config.initialWidth/2,height/2-config.initialHeight/2),
+            new Vertex(width/2+config.initialWidth/2,height/2-config.initialHeight/2),
+            new Vertex(width/2+config.initialWidth/2,height/2+config.initialHeight/2),
+            new Vertex(width/2-config.initialWidth/2,height/2+config.initialHeight/2)
             ];
   var start = points[2],
       stop = points[3];
@@ -325,6 +329,16 @@ function askTwitter(){
       }
     });
   }
+}
+
+/* ------------------------------------------------------------------------------------------- */
+
+function toggleDistortion(){
+  mode=(++mode)%modes;
+  if(mode==MODE_DRAW)
+    $("canvas").css("cursor", "none");
+  else
+    $("canvas").css("cursor", "default");
 }
 
 /* ------------------------------------------------------------------------------------------- */

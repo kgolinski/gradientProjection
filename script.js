@@ -26,6 +26,23 @@ window.onload = setup;
 
 /* ------------------------------------------------------------------------------------------- */
 
+var Config = function(){
+	this.animTime=2000;
+	this.steps = 100;
+	this.vSubdivisions = 10;
+	this.hSubdivisions = 10;
+	this.newColor = changeColors;
+	this.distTolerance = 8;
+	this.gradientStartIndex = 0;
+	this.gradientStopIndex = (this.vSubdivisions+this.hSubdivisions+2);
+	this.initialWidth = height/2;
+	this.initialHeight = height/2;
+	this.toggleDistortion = toggleDistortion;
+	this.hashtag='minska14';
+};
+
+/* ------------------------------------------------------------------------------------------- */
+
 function setup(){
 	
 	Color = net.brehaut.Color;
@@ -51,22 +68,6 @@ function setup(){
 	draw();
 	
 }
-
-/* ------------------------------------------------------------------------------------------- */
-
-var Config = function(){
-	this.animTime=2000;
-	this.steps = 100;
-	this.vSubdivisions = 7;
-	this.hSubdivisions = 7;
-	this.newColor = changeColors;
-	this.distTolerance = 8;
-	this.gradientStartIndex = 0;
-	this.gradientStopIndex = (this.vSubdivisions+this.hSubdivisions+2);
-	this.initialWidth = height/2;
-	this.initialHeight = height/2;
-	this.toggleDistortion = toggleDistortion;
-};
 
 /* ------------------------------------------------------------------------------------------- */
 
@@ -313,8 +314,8 @@ function initColors(){
 function askTwitter(){
   if(!fade)
   {
-    $.getJSON('http://search.twitter.com/search.json?q=%23kolor&rpp='+rpp+'&page=1&callback=?',function(data){
-      //console.log(data);
+    $.getJSON('http://search.twitter.com/search.json?q=%23'+config.hashtag+'&rpp='+rpp+'&page=1&callback=?',function(data){
+      //console.log("success");
       var index = -1;
       for(r in data.results){
         index = parseTweet(data.results[r].text);
@@ -327,7 +328,7 @@ function askTwitter(){
         }
         //console.log(data.results[r].text);
       }
-    });
+    })
   }
 }
 

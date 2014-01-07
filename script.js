@@ -1,4 +1,4 @@
-//controls : H, M, C, A
+//controls : H, M, C, A, S, L
 var MODE_DRAW = 0,
     MODE_CONFIG = 1,
     modes=2;
@@ -22,23 +22,28 @@ var canvas,
 	rpp=5,
 	draggedPoint = -1,
 	fade = false;
+	tweenDir = -1;
+	opacity = 1;
 window.onload = setup;
 
 /* ------------------------------------------------------------------------------------------- */
 
 var Config = function(){
-	this.animTime=2000;
+	this.animTime = 1000;
 	this.steps = 100;
-	this.vSubdivisions = 10;
-	this.hSubdivisions = 10;
+	this.vSubdivisions = 4;
+	this.hSubdivisions = 4;
 	this.newColor = changeColors;
+	this.savePoints = savePoints;
+	this.loadPoints = loadPoints;
 	this.distTolerance = 8;
 	this.gradientStartIndex = 0;
 	this.gradientStopIndex = (this.vSubdivisions+this.hSubdivisions+2);
 	this.initialWidth = height/2;
 	this.initialHeight = height/2;
 	this.toggleDistortion = toggleDistortion;
-	this.hashtag='minska14';
+	this.hashtag = 'minska14';
+	this.tweenTime = 300;
 };
 
 /* ------------------------------------------------------------------------------------------- */
@@ -50,47 +55,64 @@ function setup(){
 	ctx = canvas.getContext('2d');
 	mode = MODE_DRAW;
 	resize();
-	initListeners();
+	initListeners();	
 	$("canvas").css("cursor", "none");
 	config = new Config();
 	var gui = new dat.GUI();
 	//gui.remember(config);  	
 	gui.add(config, 'animTime',0,10000).step(500);
+	gui.add(config, 'tweenTime',0,500).step(10);
 	gui.add(config, 'steps', 0, 200);
 	gui.add(config, 'distTolerance',5,50).step(1);
 	gui.add(config, 'toggleDistortion');
 	gui.add(config, 'newColor');
-	
+	gui.add(config, 'savePoints');
+	gui.add(config, 'loadPoints');
+	///save/load
 	initColors();
 	initPoints();
 	setInterval(draw,1000.0/frameRate);
 	setInterval(askTwitter,5000);
+	tween();
 	draw();
-	
 }
+/* ------------------------------------------------------------------------------------------- */
 
+function tween(){
+	opacity+= tweenDir*(1.0/config.tweenTime)
+	if(opacity>1){
+		opacity=1;
+		tweenDir=-tweenDir;
+	}
+	else if(opacity<0){
+		opacity=0;
+		tweenDir=-tweenDir;
+	}
+	//console.log(opacity)
+}
 /* ------------------------------------------------------------------------------------------- */
 
 function draw(){
+  tween();
   clear();
-	
-	var gradient = ctx.createLinearGradient(points[config.gradientStartIndex].x, points[config.gradientStartIndex].y, points[config.gradientStopIndex].x, points[config.gradientStopIndex].y);
-
-	gradient.addColorStop(0, color1.blend(prevColor1,(1-step/config.steps)).toString());
-	gradient.addColorStop(1, color2.blend(prevColor2,(1-step/config.steps)).toString());
-	
-	ctx.fillStyle = gradient;
-
-  ctx.beginPath();
-  ctx.moveTo(points[0].x,points[0].y);
-	for(var i=1;i<points.length;i++){
-    ctx.lineTo(points[i].x,points[i].y)
-  }
-  ctx.closePath();
-  ctx.fill();
   
-  if(mode==MODE_CONFIG)
-    drawHandles();
+  var gradient = ctx.createLinearGradient(points[config.gradientStartIndex].x, points[config.gradientStartIndex].y, points[config.gradientStopIndex].x, points[config.gradientStopIndex].y);
+  gradient.addColorStop(0, color1.blend(prevColor1,(1-step/config.steps)).toString());
+  gradient.addColorStop(1, color2.blend(prevColor2,(1-step/config.steps)).toString());
+
+
+	ctx.fillStyle = gradient;
+	ctx.globalAlpha=opacity;
+    ctx.beginPath();
+    ctx.moveTo(points[0].x,points[0].y);
+	for(var i=1;i<points.length;i++){
+    	ctx.lineTo(points[i].x,points[i].y)
+  	}
+  	ctx.closePath();
+  	ctx.fill();
+  	ctx.globalAlpha=1.0;
+  	if(mode==MODE_CONFIG)
+    	drawHandles();
 	//ctx.fillRect(0, 0, width, height);
 	
 }
@@ -163,21 +185,34 @@ function changeColors(color){
 	step=0;
 	fade=true;
 	stepper();
-	
+}
+
+/* ------------------------------------------------------------------------------------------- */
+
+function savePoints() {
+	localStorage.setItem('points', JSON.stringify(points));
+}
+
+/* ------------------------------------------------------------------------------------------- */
+
+function loadPoints() {
+  var p = JSON.parse(localStorage.getItem('points'));
+  //console.log(p[0]);
+  points = p;
 }
 
 /* ------------------------------------------------------------------------------------------- */
 
 function stepper(){
-	step++;
-	if(step<config.steps)
-		setTimeout(stepper,config.animTime/config.steps)
-	else
-	{
-		prevColor1=color1;
-		prevColor2=color2;
-		fade=false;
-	}
+  step++;
+  if(step<config.steps)
+  setTimeout(stepper,config.animTime/config.steps);
+  else
+  {
+    prevColor1=color1;
+    prevColor2=color2;
+    fade=false;
+  }
 }
 
 /* ------------------------------------------------------------------------------------------- */
@@ -192,11 +227,11 @@ function initListeners(){
 /* ------------------------------------------------------------------------------------------- */
 
 function resize(){
-	document.getElementById("canvas").setAttribute('width', window.innerWidth);
-	document.getElementById("canvas").setAttribute('height', window.innerHeight);
-	width = canvas.width;
-	height = canvas.height;
-	$('table').attr("height",height);
+  document.getElementById("canvas").setAttribute('width', window.innerWidth);
+  document.getElementById("canvas").setAttribute('height', window.innerHeight);
+  width = canvas.width;
+  height = canvas.height;
+  $('table').attr("height",height);
 }
 
 /* ------------------------------------------------------------------------------------------- */
@@ -261,6 +296,10 @@ function keypress(e){
     changeColors();
   if (key=='a' || key=='A')
     askTwitter();
+  if (key=='s' || key=='S')
+    savePoints();
+  if (key=='l' || key=='L')
+    loadPoints();
 }
 
 /* ------------------------------------------------------------------------------------------- */
@@ -326,7 +365,6 @@ function askTwitter(){
           }
           break;
         }
-        //console.log(data.results[r].text);
       }
     })
   }
@@ -374,15 +412,15 @@ function distance(a,b){
 
 /* ------------------------------------------------------------------------------------------- */
 
-function constrain(a){
-	if(a.x<0)
-		a.x=width;
-	else if(a.x>width)
-		a.x=0;
-	if(a.y<0)
-		a.y=height;
-	else if(a.y>height)
-		a.y=0;
+function constrain(a, xmin,xmax,ymin,ymax){
+	if(a.x<xmin)
+		a.x=xmin;
+	else if(a.x>xmax)
+		a.x=xmax;
+	if(a.y<ymin)
+		a.y=ymin;
+	else if(a.y>ymax)
+		a.y=ymax;
 }
 
 /* ------------------------------------------------------------------------------------------- */
